@@ -12,7 +12,7 @@ const navLinks = [
   { to: "/heritage", label: "Di sản" },
   { to: "/specialties", label: "Đặc sản" },
   { to: "/dashboard", label: "Quy hoạch" },
-  { to: "/nou", label: "NOU" },
+  { to: "/nou", label: "MOU" },
 ];
 
 export default function TopNav({ transparent = false }: TopNavProps) {
