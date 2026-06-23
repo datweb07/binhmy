@@ -6,6 +6,7 @@ import { PdfPage } from '../components/CoSign/PdfPage';
 import { Upload, Download, Trash2, PenTool, MousePointer2 } from 'lucide-react';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { jsPDF } from 'jspdf';
 
 // Use a secure unpkg CDN for the worker to avoid Vite build/HMR issues in preview
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
@@ -210,13 +211,13 @@ export default function App() {
     const pages = document.querySelectorAll('.pdf-page-container');
     if (pages.length === 0) return;
     
-    // We export the first page for simplicity or multiple images. 
-    // Usually a user signs one page and wants an image of that signed page.
+    let pdf: jsPDF | null = null;
+
     pages.forEach((pageEl, idx) => {
       const canvases = pageEl.querySelectorAll('canvas');
       if (canvases.length < 2) return;
-      const pdfCanvas = canvases[0];
-      const drawingCanvas = canvases[1];
+      const pdfCanvas = canvases[0] as HTMLCanvasElement;
+      const drawingCanvas = canvases[1] as HTMLCanvasElement;
       
       const outCanvas = document.createElement('canvas');
       outCanvas.width = pdfCanvas.width;
@@ -231,19 +232,32 @@ export default function App() {
       
       // draw PDF
       ctx.drawImage(pdfCanvas, 0, 0);
-      
-      // The drawings are handled on logical pixels mapped to device resolution in the browser.
-      // Because we drew on drawingCanvas without devicePixelRatio, its width/height are CSS logical values 
-      // but its internal bitmap resolution is the same. Wait, pdfCanvas and drawingCanvas might have different 
-      // internal resolutions. We must scale drawing canvas.
       ctx.drawImage(drawingCanvas, 0, 0, outCanvas.width, outCanvas.height);
       
-      const dataUrl = outCanvas.toDataURL('image/png', 1.0);
-      const link = document.createElement('a');
-      link.download = `${pdfName.replace('.pdf', '')}_signed_page_${idx + 1}.png`;
-      link.href = dataUrl;
-      link.click();
+      const dataUrl = outCanvas.toDataURL('image/png');
+      
+      // Use logical CSS width/height for the PDF page size so high-DPI canvases (retina) 
+      // are properly scaled down, resulting in sharp text in the exported PDF.
+      const cssWidth = parseFloat(pdfCanvas.style.width) || drawingCanvas.width;
+      const cssHeight = parseFloat(pdfCanvas.style.height) || drawingCanvas.height;
+      const orientation = cssWidth > cssHeight ? 'landscape' : 'portrait';
+      
+      if (!pdf) {
+        pdf = new jsPDF({
+          orientation: orientation,
+          unit: 'px',
+          format: [cssWidth, cssHeight]
+        });
+      } else {
+        pdf.addPage([cssWidth, cssHeight], orientation);
+      }
+      
+      pdf.addImage(dataUrl, 'PNG', 0, 0, cssWidth, cssHeight);
     });
+
+    if (pdf) {
+      pdf.save(`${pdfName.replace('.pdf', '')}_signed.pdf`);
+    }
   };
 
   if (!joined) {

@@ -53,8 +53,8 @@ export function PdfPage({
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        // Use pixel ratio for high DPI displays (like iPad)
-        const outputScale = window.devicePixelRatio || 1;
+        // Use pixel ratio for high DPI displays, but force at least 3 for crisp output
+        const outputScale = Math.max(window.devicePixelRatio || 1, 3);
         
         canvas.width = Math.floor(vp.width * outputScale);
         canvas.height = Math.floor(vp.height * outputScale);
@@ -98,12 +98,11 @@ export function PdfPage({
     
     const canvas = overlayRef.current;
     
-    // We don't use devicePixelRatio scaling for the drawing canvas logic here 
-    // to keep coordinate mapping 1:1 with CSS pixels for simplicity.
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    canvas.style.width = viewport.width + "px";
-    canvas.style.height = viewport.height + "px";
+    const outputScale = Math.max(window.devicePixelRatio || 1, 3);
+    canvas.width = Math.floor(viewport.width * outputScale);
+    canvas.height = Math.floor(viewport.height * outputScale);
+    canvas.style.width = Math.floor(viewport.width) + "px";
+    canvas.style.height = Math.floor(viewport.height) + "px";
   }, [viewport]);
 
   // Redraw all strokes on overlay when strokes alter
@@ -116,6 +115,10 @@ export function PdfPage({
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    const outputScale = Math.max(window.devicePixelRatio || 1, 3);
+    ctx.save();
+    ctx.scale(outputScale, outputScale);
+
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
@@ -135,6 +138,8 @@ export function PdfPage({
       
       ctx.stroke();
     });
+    
+    ctx.restore();
   }, [strokes, viewport, scale]);
 
   const getCoordinates = (e: React.PointerEvent<HTMLCanvasElement>): Point => {
