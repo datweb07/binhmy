@@ -15,7 +15,7 @@ const experiences = [
     id: 2,
     title: 'Di Sản & Lịch Sử',
     subtitle: 'Văn hoá truyền thống',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/%C4%90%C3%ACnh_B%C3%ACnh_M%E1%BB%B9.jpg/1280px-%C4%90%C3%ACnh_B%C3%ACnh_M%E1%BB%B9.jpg',
+    image: '/assets/images/dinh-binh-my-1.jpg',
     link: '/heritage',
   },
   {
