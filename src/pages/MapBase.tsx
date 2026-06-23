@@ -163,7 +163,7 @@ const tours: {
           desc: "Giao lưu với người dân và tìm hiểu các sản vật địa phương.",
         },
         {
-          name: "Làng nghề bánh tráng",
+          name: "Làng Cuốn",
           time: "17:00",
           lnglat: [106.599734, 11.008609],
           desc: "Trải nghiệm tự tay tráng bánh thủ công.",
@@ -275,7 +275,7 @@ const tours: {
           desc: "Thưởng thức bữa sáng quen thuộc của người dân bản địa.",
         },
         {
-          name: "Lò bánh tráng Bình Mỹ",
+          name: "Dự án Làng Cuốn",
           time: "08:00",
           lnglat: [106.598513, 11.011168],
           desc: "Tham quan và thử sức với công đoạn tráng bánh.",
