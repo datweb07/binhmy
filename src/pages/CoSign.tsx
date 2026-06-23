@@ -15,7 +15,7 @@ export function cn(...inputs: (string | undefined | null | false)[]) {
 }
 
 export default function App() {
-  const [connected, setConnected] = useState(false);
+  const [connected, setConnected] = useState(socket.connected);
   const [roomId, setRoomId] = useState<string>('');
   const [inputRoomId, setInputRoomId] = useState<string>('');
   const [joined, setJoined] = useState(false);
@@ -41,6 +41,11 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    // Check initial connection status
+    if (socket.connected) {
+      setConnected(true);
+    }
+
     const onConnect = () => {
       setConnected(true);
       if (joined && roomId) {
