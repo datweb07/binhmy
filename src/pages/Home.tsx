@@ -78,7 +78,7 @@ export default function Home() {
           className="absolute inset-0 w-full h-full object-cover"
           style={{ filter: 'brightness(0.75) saturate(0.9)' }}
         >
-          <source src="/assets/videos/DJI_0765.MP4" type="video/mp4" />
+          <source src="/assets/videos/Dji_0765.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0"
           style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.6) 50%, rgba(14,34,12,0.9) 100%)' }} />
