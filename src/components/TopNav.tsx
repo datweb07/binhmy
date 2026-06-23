@@ -12,6 +12,7 @@ const navLinks = [
   { to: "/heritage", label: "Di sản" },
   { to: "/specialties", label: "Đặc sản" },
   { to: "/dashboard", label: "Quy hoạch" },
+  { to: "/nou", label: "NOU" },
 ];
 
 export default function TopNav({ transparent = false }: TopNavProps) {
@@ -80,29 +81,38 @@ export default function TopNav({ transparent = false }: TopNavProps) {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-0.5">
-          {navLinks.map(({ to, label }) => {
+          {navLinks.map(({ to, label, external }) => {
             const active = isActive(to);
+            const commonProps = {
+              key: to,
+              className: "px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200",
+              style: {
+                color: active
+                  ? transparent
+                    ? "white"
+                    : "var(--color-primary)"
+                  : textMuted,
+                background:
+                  active && !transparent
+                    ? "var(--color-primary-container)"
+                    : "transparent",
+                borderBottom:
+                  active && transparent
+                    ? "2px solid rgba(255,255,255,0.6)"
+                    : "2px solid transparent",
+              }
+            };
+
+            if (external) {
+              return (
+                <a href={to} target="_blank" rel="noreferrer" {...commonProps}>
+                  {label}
+                </a>
+              );
+            }
+
             return (
-              <Link
-                key={to}
-                to={to}
-                className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200"
-                style={{
-                  color: active
-                    ? transparent
-                      ? "white"
-                      : "var(--color-primary)"
-                    : textMuted,
-                  background:
-                    active && !transparent
-                      ? "var(--color-primary-container)"
-                      : "transparent",
-                  borderBottom:
-                    active && transparent
-                      ? "2px solid rgba(255,255,255,0.6)"
-                      : "2px solid transparent",
-                }}
-              >
+              <Link to={to} {...commonProps}>
                 {label}
               </Link>
             );
@@ -149,24 +159,35 @@ export default function TopNav({ transparent = false }: TopNavProps) {
             borderTop: "1px solid var(--color-outline)",
           }}
         >
-          {navLinks.map(({ to, label }) => (
-            <Link
-              key={to}
-              to={to}
-              onClick={() => setMobileOpen(false)}
-              className="px-4 py-3 rounded-xl text-sm font-medium"
-              style={{
+          {navLinks.map(({ to, label, external }) => {
+            const commonProps = {
+              key: to,
+              onClick: () => setMobileOpen(false),
+              className: "px-4 py-3 rounded-xl text-sm font-medium",
+              style: {
                 color: isActive(to)
                   ? "var(--color-primary)"
                   : "var(--color-on-surface-variant)",
                 background: isActive(to)
                   ? "var(--color-primary-container)"
                   : "transparent",
-              }}
-            >
-              {label}
-            </Link>
-          ))}
+              }
+            };
+
+            if (external) {
+              return (
+                <a href={to} target="_blank" rel="noreferrer" {...commonProps}>
+                  {label}
+                </a>
+              );
+            }
+
+            return (
+              <Link to={to} {...commonProps}>
+                {label}
+              </Link>
+            );
+          })}
           <Link
             to="/specialties"
             onClick={() => setMobileOpen(false)}

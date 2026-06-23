@@ -5,6 +5,7 @@ const navItems = [
   { to: '/planner',  label: 'Lịch trình' },
   { to: '/dashboard', label: 'Quy hoạch' },
   { to: '/heritage', label: 'Di sản' },
+  { to: '/nou', label: 'NOU' },
 ];
 
 export default function Header() {
@@ -33,23 +34,34 @@ export default function Header() {
 
         {/* Nav */}
         <nav className="hidden md:flex items-center gap-1">
-          {navItems.map(({ to, label }) => (
-            <Link
-              key={to}
-              to={to}
-              className="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 relative"
-              style={{
+          {navItems.map(({ to, label, external }) => {
+            const commonProps = {
+              key: to,
+              className: "px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 relative",
+              style: {
                 color: isActive(to) ? 'var(--color-primary)' : 'var(--color-on-surface-variant)',
                 background: isActive(to) ? 'var(--color-primary-container)' : 'transparent',
-              }}
-            >
-              {label}
-              {isActive(to) && (
-                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
-                      style={{ background: 'var(--color-primary)' }} />
-              )}
-            </Link>
-          ))}
+              }
+            };
+
+            if (external) {
+              return (
+                <a href={to} target="_blank" rel="noreferrer" {...commonProps}>
+                  {label}
+                </a>
+              );
+            }
+
+            return (
+              <Link to={to} {...commonProps}>
+                {label}
+                {isActive(to) && (
+                  <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+                        style={{ background: 'var(--color-primary)' }} />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Right side */}

@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Planner from "./pages/Planner";
 import Heritage from "./pages/Heritage";
 import Specialties from "./pages/Specialties";
+import CoSign from "./pages/CoSign";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/planner" element={<Planner />} />
         <Route path="/heritage" element={<Heritage />} />
         <Route path="/specialties" element={<Specialties />} />
+        <Route path="/nou" element={<CoSign />} />
       </Routes>
     </BrowserRouter>
   );
