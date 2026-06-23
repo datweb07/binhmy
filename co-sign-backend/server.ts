@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import cors from "cors";
 
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -37,24 +38,20 @@ async function startServer() {
   const PORT = process.env.PORT || 3001;
   const httpServer = createServer(app);
   
+  // Enable CORS for Express APIs using the cors package
+  app.use(cors({
+    origin: ['https://binhmy-drab.vercel.app', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true
+  }));
+
   const io = new Server(httpServer, {
     cors: {
-      origin: "*",
-      methods: ["GET", "POST"]
+      origin: ['https://binhmy-drab.vercel.app', 'http://localhost:3000'],
+      methods: ["GET", "POST"],
+      credentials: true
     },
     maxHttpBufferSize: 1e8 // 100 MB
-  });
-
-  // Enable CORS for Express APIs
-  app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-    if (req.method === 'OPTIONS') {
-      res.sendStatus(200);
-    } else {
-      next();
-    }
   });
 
   app.use(express.json({ limit: '50mb' }));
