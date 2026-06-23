@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(findstr /C:\"scripts\" /A:5)",
+      "WebFetch(domain:babylonstoren.com)",
+      "WebFetch(domain:www.watervale.com.au)",
+      "WebFetch(domain:www.farmfoodsmarket.com)",
+      "WebFetch(domain:www.sixsenses.com)",
+      "WebFetch(domain:www.anantara.com)",
+      "WebFetch(domain:www.tourismbiscaynebay.com)"
+    ]
+  }
+}
