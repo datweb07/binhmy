@@ -3,7 +3,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { socket } from '../utils/socket';
 import { Stroke, Point } from '../types/cosign';
 import { PdfPage } from '../components/CoSign/PdfPage';
-import { Upload, Download, Trash2, PenTool, MousePointer2 } from 'lucide-react';
+import { Upload, Download, Trash2, PenTool, MousePointer2, Menu, X } from 'lucide-react';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { jsPDF } from 'jspdf';
@@ -20,6 +20,9 @@ export default function App() {
   const [roomId, setRoomId] = useState<string>('');
   const [inputRoomId, setInputRoomId] = useState<string>('');
   const [joined, setJoined] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const [pdfProxy, setPdfProxy] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [pdfName, setPdfName] = useState<string>("document.pdf");
@@ -262,7 +265,7 @@ export default function App() {
 
   if (!joined) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center font-sans">
+      <div className="h-screen bg-slate-50 flex flex-col items-center justify-center font-sans overflow-hidden">
         <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-200 max-w-sm w-full mx-4">
           <div className="flex items-center justify-center w-16 h-16 bg-blue-100 text-blue-600 rounded-full mb-6 mx-auto">
             <PenTool className="w-8 h-8" />
@@ -306,10 +309,26 @@ export default function App() {
     );
   }
 
+  const handleCanvasScroll = () => {
+    if (scrollRef.current) {
+      setShowScrollTop(scrollRef.current.scrollTop > 200);
+    }
+  };
+
+  const scrollToTop = () => {
+    scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans overflow-hidden">
-      <nav className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 shadow-sm">
+    <div className="h-screen bg-slate-50 flex flex-col font-sans overflow-hidden">
+      <nav className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 shadow-sm z-10 relative">
         <div className="flex items-center space-x-4">
+          <button
+            onClick={() => setIsDrawerOpen(true)}
+            className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors mr-2"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
           <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-md">
             <PenTool className="w-5 h-5" />
           </div>
@@ -357,10 +376,36 @@ export default function App() {
         </div>
       </nav>
 
-      <main className="flex-1 flex overflow-hidden">
-        {/* Toolbar sidebar */}
-        <aside className="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 p-4 space-y-6 overflow-y-auto">
-          <section>
+      <main className="flex-1 flex overflow-hidden relative">
+        {/* Backdrop */}
+        {isDrawerOpen && (
+          <div 
+            className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-40"
+            onClick={() => setIsDrawerOpen(false)}
+          />
+        )}
+
+        {/* Drawer sidebar */}
+        <aside 
+          className={cn(
+            "fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out",
+            isDrawerOpen ? "translate-x-0" : "-translate-x-full"
+          )}
+        >
+          <div className="flex items-center justify-between p-4 border-b border-slate-200 shrink-0">
+            <h2 className="font-bold text-slate-800 flex items-center gap-2">
+              <PenTool className="w-5 h-5 text-blue-600" /> Tools & Properties
+            </h2>
+            <button 
+              onClick={() => setIsDrawerOpen(false)} 
+              className="p-1.5 hover:bg-slate-100 rounded-md text-slate-500 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto p-4 space-y-6">
+            <section>
             <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Document Properties</h3>
             <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
               <p className="text-xs font-bold truncate">{pdfName}</p>
@@ -415,7 +460,8 @@ export default function App() {
             </div>
           </section>
 
-          <section className="pt-4 border-t border-slate-100">
+          </div>
+          <section className="p-4 border-t border-slate-100 shrink-0">
             <button
               onClick={handleClearStrokes}
               className="flex items-center justify-center gap-2 w-full px-4 py-2 border border-slate-300 bg-white hover:bg-slate-50 rounded-md text-sm font-semibold transition-colors text-slate-700"
@@ -427,7 +473,20 @@ export default function App() {
         </aside>
 
         {/* Canvas area */}
-        <div className="flex-1 bg-slate-200 p-8 flex flex-col relative overflow-auto">
+        <div 
+          ref={scrollRef}
+          onScroll={handleCanvasScroll}
+          className="flex-1 bg-slate-200 p-8 flex flex-col relative overflow-auto"
+        >
+          {/* Scroll to Top Button */}
+          <button
+            onClick={scrollToTop}
+            className={`fixed bottom-6 right-6 z-50 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-slate-200 text-blue-600 ${
+              showScrollTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
+            }`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+          </button>
           {pdfProxy && (
             <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full border border-slate-300 text-[10px] font-bold text-slate-500 flex items-center space-x-4 shadow-sm z-10">
               <span>{numPages} Page(s)</span>
