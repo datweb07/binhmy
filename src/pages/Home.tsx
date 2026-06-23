@@ -75,12 +75,10 @@ export default function Home() {
           loop
           muted
           playsInline
-          crossOrigin="anonymous" /* Bắt buộc phải có để tránh lỗi CORS của video ngoài hệ thống */
           className="absolute inset-0 w-full h-full object-cover"
           style={{ filter: 'brightness(0.75) saturate(0.9)' }}
         >
-          {/* Link API stream trực tiếp từ Google Drive sử dụng ID file của bạn */}
-          <source src="https://docs.google.com/uc?export=download&id=1saUq6UR75jIJttHUr8TT9V-DD1WkmnWG" type="video/mp4" />
+          <source src="/assets/videos/DJI_0765.MP4" type="video/mp4" />
         </video>
         <div className="absolute inset-0"
           style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.6) 50%, rgba(14,34,12,0.9) 100%)' }} />
