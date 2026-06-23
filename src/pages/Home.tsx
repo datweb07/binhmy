@@ -70,14 +70,18 @@ export default function Home() {
 
       {/* ── HERO ──────────────────────────────────────────────── */}
       <section className="relative w-full overflow-hidden" style={{ height: '100vh', minHeight: 600 }}>
-        <img
-          src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&q=80&w=2000"
-          alt="Bình Mỹ sinh thái"
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: 'brightness(0.72) saturate(0.8)' }}
-        />
+          style={{ filter: 'brightness(0.75) saturate(0.9)' }}
+        >
+          <source src="/assets/videos/DJI_0765.MP4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0"
-          style={{ background: 'linear-gradient(to bottom, rgba(14,34,12,0.25) 0%, rgba(14,34,12,0.5) 50%, rgba(14,34,12,0.82) 100%)' }} />
+          style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.6) 50%, rgba(14,34,12,0.9) 100%)' }} />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.35em] mb-8 animate-fade-up"
