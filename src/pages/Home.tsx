@@ -105,7 +105,7 @@ export default function Home() {
 
           <p className="text-lg md:text-xl max-w-lg leading-relaxed mb-12 animate-fade-up"
             style={{ color: 'rgba(255,255,255,0.68)', animationDelay: '0.38s' }}>
-            Vùng đất sinh thái ven sông Sài Gòn — miệt vườn trù phú, dòng nước hiền hoà, văn hoá ngàn năm nguyên vẹn.
+            Vùng đất sinh thái ven sông Sài Gòn miệt vườn trù phú, dòng nước hiền hoà, lịch sử hào hùng - cộng đồng gắn kết.
           </p>
 
           <div className="flex items-center gap-4 animate-fade-up" style={{ animationDelay: '0.52s' }}>
